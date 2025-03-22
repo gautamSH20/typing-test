@@ -1,32 +1,12 @@
 import { useRef } from "react";
-import { RecoilRoot, useSetRecoilState, useRecoilValue } from "recoil";
-import { indexAtom } from "./atom";
 import "./App.css";
-
-function TextArea({ arr }: { arr: string[] }) {
-  const idx = useRecoilValue(indexAtom);
-  const setIndx = useSetRecoilState(indexAtom);
-
-  return (
-    <textarea
-      className="h-90 w-90 p-0 border-2"
-      onChange={(e) => {
-        if (e.target.value === arr[idx]) {
-          console.log("correct");
-        } else {
-          console.log("wrong");
-        }
-        setIndx((prev) => prev + 1);
-      }}
-      onKeyDown={(e) => {
-        console.log(e.key);
-      }}
-    />
-  );
-}
+import { Clock } from "./component/Clock";
 
 function App() {
   const para = useRef("");
+  const len = useRef(0);
+  const idx = useRef(0);
+  const clock = useRef(false);
   const pragraph = [
     "She was in a hurry. Not the standard hurry when you're in a rush to get someplace, but a frantic hurry. The type of hurry where a few seconds could mean life or death. She raced down the road ignoring speed limits and weaving between cars. She was only a few minutes away when traffic came to a dead standstill on the road ahead.",
     "He couldn't move. His head throbbed and spun. He couldn't decide if it was the flu or the drinking last night. It was probably a combination of both.",
@@ -42,15 +22,55 @@ function App() {
   para.current = pragraph[indx];
 
   const arr: any = para.current.split("");
+  function getChar() {
+    console.log(idx.current);
+    const char = arr[idx.current];
+    return char;
+  }
+
+  function clockIsTrue() {
+    clock.current = !clock.current;
+    console.log(clock.current);
+  }
 
   console.log(arr);
   return (
-    <RecoilRoot>
+    <div>
+      <div>{para.current}</div>
       <div>
-        <div>{para.current}</div>
-        <TextArea arr={arr} />
+        <textarea
+          className="h-90 w-120 border-2"
+          onKeyDown={(e) => {
+            if (e.key === "Backspace") {
+              if (idx.current > 0) {
+                idx.current--;
+                len.current--;
+              }
+              console.log(idx.current);
+            }
+          }}
+          onChange={(e) => {
+            if (e.target.value.length > len.current) {
+              console.log(e.target.value.charAt(idx.current));
+              len.current = e.target.value.length;
+              const ch = getChar();
+              if (e.target.value.charAt(idx.current) === ch) {
+                console.log("correct");
+              } else {
+                console.log("wrong");
+              }
+              idx.current++;
+            }
+          }}
+        ></textarea>
       </div>
-    </RecoilRoot>
+      <div>
+        <button className="btn" onClick={clockIsTrue}>
+          Click start
+        </button>
+      </div>
+      <Clock istrue={clock.current} />
+    </div>
   );
 }
 
