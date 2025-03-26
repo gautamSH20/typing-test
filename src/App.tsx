@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import "./App.css";
-import { Clock } from "./component/Clock";
 
-function App() {
+function TypingTest() {
   const para = useRef("");
   const len = useRef(0);
   const idx = useRef(0);
-  const clock = useRef(false);
+  const time = useRef(10);
+  const istrue = useRef(false);
   const pragraph = [
     "She was in a hurry. Not the standard hurry when you're in a rush to get someplace, but a frantic hurry. The type of hurry where a few seconds could mean life or death. She raced down the road ignoring speed limits and weaving between cars. She was only a few minutes away when traffic came to a dead standstill on the road ahead.",
     "He couldn't move. His head throbbed and spun. He couldn't decide if it was the flu or the drinking last night. It was probably a combination of both.",
@@ -29,8 +29,10 @@ function App() {
   }
 
   function clockIsTrue() {
-    clock.current = !clock.current;
-    console.log(clock.current);
+    for (let i = 60; i > 0; i--) {
+      const prromis = new Promise(() => setTimeout(() => {}, 1000));
+      console.log(i);
+    }
   }
 
   console.log(arr);
@@ -50,6 +52,10 @@ function App() {
             }
           }}
           onChange={(e) => {
+            if (e.target.value.length === para.current.length) {
+              istrue.current = false;
+              return;
+            }
             if (e.target.value.length > len.current) {
               console.log(e.target.value.charAt(idx.current));
               len.current = e.target.value.length;
@@ -59,6 +65,7 @@ function App() {
               } else {
                 console.log("wrong");
               }
+
               idx.current++;
             }
           }}
@@ -69,9 +76,13 @@ function App() {
           Click start
         </button>
       </div>
-      <Clock istrue={clock.current} />
+      <div>{time.current}</div>
     </div>
   );
+}
+
+function App() {
+  return <TypingTest />;
 }
 
 export default App;
